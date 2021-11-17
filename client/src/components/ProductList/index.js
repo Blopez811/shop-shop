@@ -27,7 +27,17 @@ function ProductList() {
       // but let's also take each product and save it to IndexedDB using the helper function
       data.products.forEach((product) => {
         idbPromise('products', 'put', product);
-      })
+      });
+      // add else if to check if 'loading' is undefined in 'useQuery() Hook
+    } else if (!loading) {
+      // since we're offline, get all of the data from the 'products' store
+      idbPromise('products', 'get').then((products) => {
+        // use retrived data to set global state for offline browsing
+        dispatch({
+          type: UPDATE_PRODUCTS,
+          products: products
+        });
+      });
     }
   }, [data, loading, dispatch]);
   
